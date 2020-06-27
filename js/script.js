@@ -186,9 +186,22 @@ window.addEventListener('DOMContentLoaded', () => {
     return await res.json();
   };
 
-  getResource('http://localhost:3000/menu')
+  // getResource('http://localhost:3000/menu')
+  //   .then(data => {
+  //     data.forEach(({img, altimg, title, descr, price}) => {
+  //       new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+  //     });
+  //   });
+
+  axios.get('http://localhost:3000/menu')
     .then(data => {
-      data.forEach(({img, altimg, title, descr, price}) => {
+      data.data.forEach(({
+        img,
+        altimg,
+        title,
+        descr,
+        price
+      }) => {
         new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
       });
     });
@@ -327,5 +340,60 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
 
-  
+
+  // Slider 1
+
+  const slides = document.querySelectorAll('.offer__slide'),
+    prev = document.querySelector('.offer__slider-prev'),
+    next = document.querySelector('.offer__slider-next'),
+    total = document.querySelector('#total'),
+    current = document.querySelector('#current')
+
+  let slideIndex = 1;
+
+  showSlides(slideIndex);
+
+  if(slides.length < 10) {
+    total.textContent = `0${slides.length}`;
+  } else {
+    total.textContent = slides.length;
+  }
+
+  function showSlides(n) {
+    if (n > slides.length) {
+      slideIndex = 1;
+    }
+
+    if (n < 1) {
+      slideIndex = slides.length;
+    }
+
+    slides.forEach(item => {
+      item.classList.add('hide');
+      item.classList.remove('show', 'fade');
+    });
+
+    slides[slideIndex - 1].classList.remove('hide');
+    slides[slideIndex - 1].classList.add('show', 'fade');
+
+    if(slides.length < 10) {
+      current.textContent = `0${slideIndex}`;
+    } else {
+      total.textContent = slideIndex;
+    }
+  }
+
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+
+  prev.addEventListener('click', () => {
+    plusSlides(-1);
+  });
+
+  next.addEventListener('click', () => {
+    plusSlides(1);
+  });
+
+
 });
